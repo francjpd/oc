@@ -5,6 +5,27 @@ const path = require('path');
 
 const strings = require('../../../resources');
 
+const replaceComponentPath = name => file =>
+  file.replace(/__componentName__/g, name);
+const isNotFile = possibleFile => !fs.statSync(possibleFile).isFile();
+
+const applyFnToAllFiles = (dir, fn) => {
+  const possibleFiles = fs.readdirSync(dir);
+  possibleFiles.forEach(possibleFile => {
+    if (isNotFile(path.join(dir, possibleFile))) {
+      applyFnToAllFiles(path.join(dir, possibleFile), fn);
+    } else {
+      const fileModified = fn(
+        fs.readFileSync(path.join(dir, possibleFile), 'UTF-8')
+      );
+      fs.writeFileSync(
+        path.join(componentPath, dir, possibleFile),
+        fileModified
+      );
+    }
+  });
+};
+
 module.exports = function scaffold(options, callback) {
   const {
     compiler,
@@ -22,6 +43,9 @@ module.exports = function scaffold(options, callback) {
 
   try {
     fs.copySync(baseComponentFiles, componentPath);
+
+    const replaceWith = replaceComponentPath(componentName);
+    applyFnToAllFiles(path.join(compilerPath, 'scaffold'), replaceWith);
 
     const componentPackage = fs.readJSONSync(
       path.join(componentPath, 'package.json')
