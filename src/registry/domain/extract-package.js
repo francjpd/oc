@@ -18,7 +18,11 @@ module.exports = function(files, callback) {
   targz.decompress(
     {
       src: packagePath,
-      dest: packageUntarOutput
+      dest: packageUntarOutput,
+      tar: {
+        dmode: 766,
+        fmode: 766
+      }
     },
     err => {
       if (err) {
