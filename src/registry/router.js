@@ -18,7 +18,7 @@ module.exports.create = function(app, conf, repository) {
     componentInfo: new ComponentInfoRoute(conf, repository),
     componentPreview: new ComponentPreviewRoute(conf, repository),
     index: new IndexRoute(repository),
-    publish: new PublishRoute(repository),
+    publish: new PublishRoute(repository, conf),
     staticRedirector: new StaticRedirectorRoute(repository)
   };
 
@@ -34,9 +34,7 @@ module.exports.create = function(app, conf, repository) {
 
   if (conf.local) {
     app.get(
-      `${prefix}:componentName/:componentVersion/${
-        settings.registry.localStaticRedirectorPath
-      }*`,
+      `${prefix}:componentName/:componentVersion/${settings.registry.localStaticRedirectorPath}*`,
       routes.staticRedirector
     );
   } else {
@@ -51,9 +49,7 @@ module.exports.create = function(app, conf, repository) {
   app.post(prefix, routes.components);
 
   app.get(
-    `${prefix}:componentName/:componentVersion${
-      settings.registry.componentInfoPath
-    }`,
+    `${prefix}:componentName/:componentVersion${settings.registry.componentInfoPath}`,
     routes.componentInfo
   );
   app.get(
@@ -62,9 +58,7 @@ module.exports.create = function(app, conf, repository) {
   );
 
   app.get(
-    `${prefix}:componentName/:componentVersion${
-      settings.registry.componentPreviewPath
-    }`,
+    `${prefix}:componentName/:componentVersion${settings.registry.componentPreviewPath}`,
     routes.componentPreview
   );
   app.get(

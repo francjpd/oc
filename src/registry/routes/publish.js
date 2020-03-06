@@ -6,7 +6,7 @@ const extractPackage = require('../domain/extract-package');
 const strings = require('../../resources/index');
 const validator = require('../domain/validators');
 
-module.exports = function(repository) {
+module.exports = function(repository, options) {
   return function(req, res) {
     if (!req.params.componentName || !req.params.componentVersion) {
       res.errorDetails = 'malformed request';
@@ -51,7 +51,7 @@ module.exports = function(repository) {
       });
     }
 
-    extractPackage(req.files, (err, pkgDetails) => {
+    extractPackage(req.files, options, (err, pkgDetails) => {
       if (err) {
         res.errorDetails = `Package is not valid: ${err}`;
         return res

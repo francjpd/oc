@@ -5,7 +5,7 @@ const targz = require('targz');
 
 const getPackageJsonFromTempDir = require('./get-package-json-from-temp-dir');
 
-module.exports = function(files, callback) {
+module.exports = function(files, { tarExtractMode = 766 }, callback) {
   const packageFile = files[0],
     packagePath = path.resolve(packageFile.path),
     packageUntarOutput = path.resolve(
@@ -20,8 +20,8 @@ module.exports = function(files, callback) {
       src: packagePath,
       dest: packageUntarOutput,
       tar: {
-        dmode: 766,
-        fmode: 766
+        dmode: tarExtractMode,
+        fmode: tarExtractMode
       }
     },
     err => {
